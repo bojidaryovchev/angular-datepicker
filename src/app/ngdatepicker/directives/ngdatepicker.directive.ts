@@ -68,7 +68,7 @@ export class NgDatepickerDirective implements OnChanges {
   }
 
   private getDomElement<T>(componentRef: ComponentRef<T>): HTMLElement {
-    return (componentRef.hostView as EmbeddedViewRef<unknown>).rootNodes[0] as HTMLElement;
+    return (componentRef.hostView as EmbeddedViewRef<T>).rootNodes[0] as HTMLElement;
   }
 
   private appendToBody() {
