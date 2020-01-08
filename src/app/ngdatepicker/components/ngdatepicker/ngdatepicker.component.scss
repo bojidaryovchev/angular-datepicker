@@ -1,0 +1,194 @@
+.ngdatepicker {
+  width: 278px;
+  height: 288px;
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  box-shadow: 0 0 10px 0 #aaa;
+  user-select: none;
+
+  .ngdatepicker-header {
+    height: 48px;
+    background: #4ec3e0;
+    border-radius: 3px 3px 0 0;
+    display: flex;
+
+    .ngdatepicker-header-arrow {
+      width: 42px;
+      color: white;
+      cursor: pointer;
+
+      .material-icons {
+        border-radius: 50%;
+      }
+
+      &:hover {
+        .material-icons {
+          background: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .ngdatepicker-header-middle {
+      flex: 1;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .ngdatepicker-header-middle-inner {
+        padding: 6px 10px;
+        border-radius: 18px;
+
+        &:hover {
+          cursor: pointer;
+          background: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+
+  .ngdatepicker-cells {
+    flex: 1;
+    border-radius: 0 0 3px 3px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+
+    .ngdatepicker-cells-days {
+      height: 20px;
+      display: flex;
+
+      .ngdatepicker-cells-days-cell {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 13px;
+        color: #9aaec1;
+      }
+    }
+
+    .ngdatepicker-cells-dates {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+
+      .ngdatepicker-cells-dates-cell {
+        width: calc(100% / 7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 13px;
+        color: #54708b;
+
+        .ngdatepicker-cells-dates-cell-inner {
+          width: 34px;
+          height: 34px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+
+          &:hover {
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.1);
+          }
+        }
+
+        &.ngdatepicker-cells-dates-cell-disabled {
+          color: rgba(0, 0, 0, 0.25);
+        }
+
+        &.ngdatepicker-cells-dates-cell-today {
+          color: white;
+
+          .ngdatepicker-cells-dates-cell-inner {
+            background: #56c271;
+          }
+        }
+
+        &.ngdatepicker-cells-dates-cell-active {
+          color: white;
+
+          .ngdatepicker-cells-dates-cell-inner {
+            background: #4ec3e0;
+          }
+        }
+
+        &.ngdatepicker-cells-dates-cell-today.ngdatepicker-cells-dates-cell-active {
+          .ngdatepicker-cells-dates-cell-inner {
+            border: 3px solid #56c271;
+            box-sizing: border-box;
+          }
+        }
+      }
+    }
+
+    .ngdatepicker-cells-months {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+
+      .ngdatepicker-cells-months-cell {
+        width: 33.333333%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 13px;
+        color: #54708b;
+
+        .ngdatepicker-cells-months-cell-inner {
+          padding: 6px 10px;
+          border-radius: 18px;
+        }
+
+        &:hover {
+          cursor: pointer;
+
+          .ngdatepicker-cells-months-cell-inner {
+            background: rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+    }
+
+    .ngdatepicker-cells-years {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+
+      .ngdatepicker-cells-years-cell {
+        width: 25%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 13px;
+        color: #54708b;
+
+        .ngdatepicker-cells-years-cell-inner {
+          height: 44px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 44px;
+        }
+
+        &:hover {
+          cursor: pointer;
+
+          .ngdatepicker-cells-years-cell-inner {
+            background: rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  &.ngdatepicker-visible {
+    visibility: visible;
+  }
+}

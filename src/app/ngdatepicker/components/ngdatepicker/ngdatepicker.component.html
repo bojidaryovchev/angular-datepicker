@@ -1,0 +1,63 @@
+<div class="ngdatepicker" [class.ngdatepicker-visible]="visible">
+  <div class="ngdatepicker-header">
+    <div class="ngdatepicker-header-arrow" (click)="backwards()">
+      <div class="responsive-flex-wrapper">
+        <i class="material-icons">keyboard_arrow_left</i>
+      </div>
+    </div>
+    <div class="ngdatepicker-header-middle">
+      <ng-container [ngSwitch]="currentDatepickerView">
+        <ng-container *ngSwitchCase="datepickerView.Days">
+          <div class="ngdatepicker-header-middle-inner" (click)="toggleView($event, datepickerView.Months)">{{ monthString }}</div>
+          <div class="ngdatepicker-header-middle-inner" (click)="toggleView($event, datepickerView.Years)">{{ year }}</div>
+        </ng-container>
+        <ng-container *ngSwitchCase="datepickerView.Months">
+          <div class="ngdatepicker-header-middle-inner" (click)="toggleView($event, datepickerView.Years)">{{ year }}</div>
+        </ng-container>
+        <ng-container *ngSwitchCase="datepickerView.Years">
+          <div class="ngdatepicker-header-middle-inner">{{ startYear }} - {{ endYear }}</div>
+        </ng-container>
+      </ng-container>
+    </div>
+    <div class="ngdatepicker-header-arrow" (click)="forwards()">
+      <div class="responsive-flex-wrapper">
+        <i class="material-icons">keyboard_arrow_right</i>
+      </div>
+    </div>
+  </div>
+  <div class="ngdatepicker-cells">
+    <ng-container [ngSwitch]="currentDatepickerView">
+      <ng-container *ngSwitchCase="datepickerView.Days">
+        <div class="ngdatepicker-cells-days">
+          <div class="ngdatepicker-cells-days-cell" *ngFor="let day of days">{{ day }}</div>
+        </div>
+        <div class="ngdatepicker-cells-dates">
+          <div
+            class="ngdatepicker-cells-dates-cell"
+            *ngFor="let d of dates"
+            (click)="onDateChosen($event, d)"
+            [class.ngdatepicker-cells-dates-cell-disabled]="d.disabled"
+            [class.ngdatepicker-cells-dates-cell-active]="isActive(d.date)"
+            [class.ngdatepicker-cells-dates-cell-today]="isToday(d.date)"
+          >
+            <div class="ngdatepicker-cells-dates-cell-inner">{{ d.date | ngDate }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="datepickerView.Months">
+        <div class="ngdatepicker-cells-months">
+          <div class="ngdatepicker-cells-months-cell" *ngFor="let month of months; let i = index" (click)="onMonthChosen($event, i)">
+            <div class="ngdatepicker-cells-months-cell-inner">{{ month }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="datepickerView.Years">
+        <div class="ngdatepicker-cells-years">
+          <div class="ngdatepicker-cells-years-cell" *ngFor="let year of surroundingYears" (click)="onYearChosen($event, year)">
+            <div class="ngdatepicker-cells-years-cell-inner">{{ year }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
