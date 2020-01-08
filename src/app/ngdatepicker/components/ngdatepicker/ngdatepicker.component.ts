@@ -205,7 +205,7 @@ export class NgDatepickerComponent {
     if (ngDate.disabled) {
       if (ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() === this.year || ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() < this.year) {
         this.backwards();
-      } else if (ngDate.date.getMonth() > this.month || ngDate.date.getFullYear() === this.year || ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() > this.year) {
+      } else if (ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() === this.year || ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() > this.year) {
         this.forwards();
       }
     } else {
