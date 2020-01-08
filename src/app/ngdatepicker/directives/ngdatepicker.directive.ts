@@ -1,4 +1,18 @@
-import { ApplicationRef, ChangeDetectorRef, ComponentRef, Directive, ElementRef, EmbeddedViewRef, HostListener, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import {
+  ApplicationRef,
+  ChangeDetectorRef,
+  ComponentRef,
+  Directive,
+  ElementRef,
+  EmbeddedViewRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { NgDatepickerComponent } from '../components/ngdatepicker/ngdatepicker.component';
 import { DynamicComponentsService } from '../services/dynamicComponents.service';
 import { isChildOf } from '../utilities/html.utilities';
@@ -9,7 +23,7 @@ import { isChildOf } from '../utilities/html.utilities';
     '(click)': 'onClick($event)'
   }
 })
-export class NgDatepickerDirective implements OnChanges {
+export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   private readonly marginTop: number = 4;
 
   @Input() date: Date;
@@ -24,13 +38,24 @@ export class NgDatepickerDirective implements OnChanges {
     private readonly elementRef: ElementRef<HTMLElement>
   ) {
     if (!NgDatepickerDirective.ngDatepickerComponentRef) {
-      this.appendToBody();
-      this.registerGlobalScrollHandler();
+      NgDatepickerDirective.ngDatepickerComponentRef = this.dynamicComponentsService.createComponentElement(NgDatepickerComponent, {});
+
+      this.appRef.attachView(NgDatepickerDirective.ngDatepickerComponentRef.hostView);
     }
+  }
+
+  ngOnInit() {
+    this.appendToBody();
+    this.initGlobalScrollHandler();
   }
 
   ngOnChanges() {
     this.updateInstance();
+  }
+
+  ngOnDestroy() {
+    this.removeFromBody();
+    this.destroyGlobalScrollHandler();
   }
 
   get datepickerElement(): HTMLElement {
@@ -72,11 +97,11 @@ export class NgDatepickerDirective implements OnChanges {
   }
 
   private appendToBody() {
-    NgDatepickerDirective.ngDatepickerComponentRef = this.dynamicComponentsService.createComponentElement(NgDatepickerComponent, {});
-
-    this.appRef.attachView(NgDatepickerDirective.ngDatepickerComponentRef.hostView);
-
     document.body.appendChild(this.getDomElement(NgDatepickerDirective.ngDatepickerComponentRef));
+  }
+
+  private removeFromBody() {
+    this.getDomElement(NgDatepickerDirective.ngDatepickerComponentRef).remove();
   }
 
   private updateInstance() {
@@ -100,7 +125,7 @@ export class NgDatepickerDirective implements OnChanges {
     } else {
       datepicker.style.left = `${left + width - datepickerBoundingRect.width}px`;
     }
-    
+
     const elementFitsBeneath: boolean = top + height + this.marginTop + datepickerBoundingRect.height <= window.innerHeight;
 
     if (elementFitsBeneath) {
@@ -114,13 +139,11 @@ export class NgDatepickerDirective implements OnChanges {
     this.updatePosition();
   }
 
-  private registerGlobalScrollHandler() {
-    document.addEventListener(
-      'scroll',
-      () => {
-        this.globalScrollHandler();
-      },
-      true
-    );
+  private initGlobalScrollHandler() {
+    document.addEventListener('scroll', this.globalScrollHandler, true);
+  }
+
+  private destroyGlobalScrollHandler() {
+    document.removeEventListener('scroll', this.globalScrollHandler);
   }
 }
