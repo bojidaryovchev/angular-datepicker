@@ -12,6 +12,7 @@ export class NgDatepickerComponent {
   private readonly yearCellsCount: number = 16;
   private readonly dayTimespan: number = 24 * 3600 * 1000;
   private readonly datesRows: number = 6;
+  private readonly minYear: number = 1895;
 
   visible: boolean;
   months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -122,24 +123,28 @@ export class NgDatepickerComponent {
         this.month--;
 
         if (this.month < 0) {
-          this.year--;
-          this.month = this.months.length - 1;
+          if (this.year - 1 >= this.minYear) {
+            this.year--;
+            this.month = this.months.length - 1;
+          } else {
+            this.month = 0;
+          }
         }
 
         break;
       case DatepickerView.Months:
         this.year--;
 
-        if (this.year < 0) {
-          this.year = 0;
+        if (this.year < this.minYear) {
+          this.year = this.minYear + this.yearCellsCount / 2 - 1;
         }
 
         break;
       case DatepickerView.Years:
         this.year -= this.yearCellsCount;
 
-        if (this.year < this.yearCellsCount / 2) {
-          this.year = this.yearCellsCount / 2;
+        if (this.year < this.minYear) {
+          this.year = this.minYear + this.yearCellsCount / 2 - 1;
         }
 
         break;
@@ -203,9 +208,15 @@ export class NgDatepickerComponent {
     e.stopImmediatePropagation();
 
     if (ngDate.disabled) {
-      if (ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() === this.year || ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() < this.year) {
+      if (
+        (ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() === this.year) ||
+        (ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() < this.year)
+      ) {
         this.backwards();
-      } else if (ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() === this.year || ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() > this.year) {
+      } else if (
+        (ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() === this.year) ||
+        (ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() > this.year)
+      ) {
         this.forwards();
       }
     } else {
