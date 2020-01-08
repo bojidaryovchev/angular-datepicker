@@ -68,7 +68,7 @@ export class NgDatepickerDirective implements OnChanges {
   }
 
   private getDomElement<T>(componentRef: ComponentRef<T>): HTMLElement {
-    return (componentRef.hostView as EmbeddedViewRef<T>).rootNodes[0] as HTMLElement;
+    return (componentRef.hostView as EmbeddedViewRef<unknown>).rootNodes[0] as HTMLElement;
   }
 
   private appendToBody() {
@@ -88,18 +88,25 @@ export class NgDatepickerDirective implements OnChanges {
   }
 
   private updatePosition() {
-    const { left, top, height } = this.elementRef.nativeElement.getBoundingClientRect();
+    const { left, top, width, height } = this.elementRef.nativeElement.getBoundingClientRect();
 
     const datepicker = this.datepickerElement.firstElementChild as HTMLElement;
+    const datepickerBoundingRect = datepicker.getBoundingClientRect();
 
-    datepicker.style.left = `${left}px`;
+    const elementFitsOnTheRight: boolean = left + datepickerBoundingRect.width <= window.innerWidth;
 
-    const elementFitsBeneath: boolean = top + height + this.marginTop + datepicker.getBoundingClientRect().height <= window.innerHeight;
+    if (elementFitsOnTheRight) {
+      datepicker.style.left = `${left}px`;
+    } else {
+      datepicker.style.left = `${left + width - datepickerBoundingRect.width}px`;
+    }
+    
+    const elementFitsBeneath: boolean = top + height + this.marginTop + datepickerBoundingRect.height <= window.innerHeight;
 
     if (elementFitsBeneath) {
       datepicker.style.top = `${top + height + this.marginTop}px`;
     } else {
-      datepicker.style.top = `${top - this.marginTop - datepicker.getBoundingClientRect().height}px`;
+      datepicker.style.top = `${top - this.marginTop - datepickerBoundingRect.height}px`;
     }
   }
 
