@@ -136,7 +136,7 @@ export class NgDatepickerComponent {
         this.year--;
 
         if (this.year < this.minYear) {
-          this.year = this.minYear + this.yearCellsCount / 2 - 1;
+          this.year = this.minYear;
         }
 
         break;
@@ -144,7 +144,7 @@ export class NgDatepickerComponent {
         this.year -= this.yearCellsCount;
 
         if (this.year < this.minYear) {
-          this.year = this.minYear;
+          this.year = this.minYear + this.yearCellsCount / 2 - 1;
         }
 
         break;
