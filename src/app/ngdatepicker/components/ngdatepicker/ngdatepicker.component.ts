@@ -50,14 +50,22 @@ export class NgDatepickerComponent {
   }
 
   get dates(): NgDate[] {
+    if (!this.date) {
+      return;
+    }
+
     const dates: NgDate[] = [];
 
     let date = new Date(this.year, this.month);
+
+    this.setTime(this.date, date);
 
     let prev = new Date(date);
 
     for (let i = prev.getDay() - 1; i > 0; i--) {
       prev = new Date(prev.getTime() - this.dayTimespan);
+
+      this.setTime(this.date, prev);
 
       dates.unshift({
         date: prev,
@@ -71,6 +79,8 @@ export class NgDatepickerComponent {
       });
 
       date = new Date(date.getTime() + this.dayTimespan);
+
+      this.setTime(this.date, date);
     }
 
     while (dates.length < this.datesRows * this.days.length) {
@@ -80,9 +90,18 @@ export class NgDatepickerComponent {
       });
 
       date = new Date(date.getTime() + this.dayTimespan);
+
+      this.setTime(this.date, date);
     }
 
     return dates;
+  }
+
+  setTime(source: Date, target: Date) {
+    target.setHours(source.getHours());
+    target.setMinutes(source.getMinutes());
+    target.setSeconds(source.getSeconds());
+    target.setMilliseconds(source.getMilliseconds());
   }
 
   isActive(date: Date) {
@@ -109,12 +128,12 @@ export class NgDatepickerComponent {
     this.changeDetectorRef.markForCheck();
   }
 
-  initMonth(date: Date = this.date) {
-    this.month = date.getMonth();
+  initMonth() {
+    this.month = this.date.getMonth();
   }
 
-  initYear(date: Date = this.date) {
-    this.year = date.getFullYear();
+  initYear() {
+    this.year = this.date.getFullYear();
   }
 
   backwards() {
