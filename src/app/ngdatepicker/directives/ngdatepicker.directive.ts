@@ -140,10 +140,10 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private initGlobalScrollHandler() {
-    document.addEventListener('scroll', this.globalScrollHandler, true);
+    document.addEventListener('scroll', this.globalScrollHandler.bind(this), true);
   }
 
   private destroyGlobalScrollHandler() {
-    document.removeEventListener('scroll', this.globalScrollHandler);
+    document.removeEventListener('scroll', this.globalScrollHandler.bind(this));
   }
 }
