@@ -31,6 +31,7 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   @Output() dateChanged: EventEmitter<Date> = new EventEmitter();
 
   static ngDatepickerComponentRef: ComponentRef<NgDatepickerComponent>;
+  static ngDatepickerDirectives: NgDatepickerDirective[] = [];
 
   constructor(
     private readonly dynamicComponentsService: DynamicComponentsService,
@@ -45,6 +46,8 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
+    NgDatepickerDirective.ngDatepickerDirectives.push(this);
+
     this.appendToBody();
     this.initGlobalScrollHandler();
   }
@@ -54,6 +57,8 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
+    NgDatepickerDirective.ngDatepickerDirectives = NgDatepickerDirective.ngDatepickerDirectives.filter(directive => directive !== this);
+
     this.removeFromBody();
     this.destroyGlobalScrollHandler();
   }
@@ -85,9 +90,19 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
 
   @HostListener('document:click', ['$event']) onDocumentClick({ target }: Event) {
     const targetIsNotPartOfTheDatepicker = target !== this.datepickerElement && !isChildOf(this.datepickerElement, target as HTMLElement);
-    const targetIsNotPartOfTheElementRef = target !== this.elementRef.nativeElement && !isChildOf(this.elementRef.nativeElement, target as HTMLElement);
 
-    if (targetIsNotPartOfTheDatepicker && targetIsNotPartOfTheElementRef) {
+    let targetIsNotPartOfAnyDirectiveElementRef: boolean = true;
+
+    for (let index = 0; index < NgDatepickerDirective.ngDatepickerDirectives.length; index++) {
+      const directive = NgDatepickerDirective.ngDatepickerDirectives[index];
+      
+      if (target === directive.elementRef.nativeElement || isChildOf(directive.elementRef.nativeElement, target as HTMLElement)) {
+        targetIsNotPartOfAnyDirectiveElementRef = false;
+        break;
+      }
+    }
+
+    if (targetIsNotPartOfTheDatepicker && targetIsNotPartOfAnyDirectiveElementRef) {
       this.datepickerInstance.hide();
     }
   }
@@ -144,6 +159,6 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private destroyGlobalScrollHandler() {
-    document.removeEventListener('scroll', this.globalScrollHandler.bind(this));
+    document.removeEventListener('scroll', this.globalScrollHandler);
   }
 }
