@@ -30,26 +30,23 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
 
   @Output() dateChanged: EventEmitter<Date> = new EventEmitter();
 
-  static ngDatepickerComponentRef: ComponentRef<NgDatepickerComponent>;
   static ngDatepickerDirectives: NgDatepickerDirective[] = [];
+
+  ngDatepickerComponentRef: ComponentRef<NgDatepickerComponent>;
 
   constructor(
     private readonly dynamicComponentsService: DynamicComponentsService,
     private readonly appRef: ApplicationRef,
     private readonly elementRef: ElementRef<HTMLElement>
-  ) {
-    if (!NgDatepickerDirective.ngDatepickerComponentRef) {
-      NgDatepickerDirective.ngDatepickerComponentRef = this.dynamicComponentsService.createComponentElement(NgDatepickerComponent, {});
-
-      this.appRef.attachView(NgDatepickerDirective.ngDatepickerComponentRef.hostView);
-    }
-  }
+  ) {}
 
   ngOnInit() {
     NgDatepickerDirective.ngDatepickerDirectives.push(this);
 
     this.appendToBody();
     this.initGlobalScrollHandler();
+
+    this.updateInstance();
   }
 
   ngOnChanges() {
@@ -63,24 +60,32 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
     this.destroyGlobalScrollHandler();
   }
 
+  get directiveInstance(): NgDatepickerDirective {
+    return NgDatepickerDirective.ngDatepickerDirectives.find(d => d === this);
+  }
+
   get datepickerElement(): HTMLElement {
-    return this.getDomElement(NgDatepickerDirective.ngDatepickerComponentRef);
+    if (!this.directiveInstance) {
+      return;
+    }
+
+    return this.getDomElement(this.directiveInstance.ngDatepickerComponentRef);
   }
 
   get datepickerInstance(): NgDatepickerComponent {
-    const {
-      ngDatepickerComponentRef: { instance }
-    } = NgDatepickerDirective;
+    if (!this.directiveInstance) {
+      return;
+    }
 
-    return instance;
+    return this.directiveInstance.ngDatepickerComponentRef.instance;
   }
 
   get datepickerChangeDetectorRef(): ChangeDetectorRef {
-    const {
-      ngDatepickerComponentRef: { changeDetectorRef }
-    } = NgDatepickerDirective;
+    if (!this.directiveInstance) {
+      return;
+    }
 
-    return changeDetectorRef;
+    return this.directiveInstance.ngDatepickerComponentRef.changeDetectorRef;
   }
 
   onClick() {
@@ -95,7 +100,7 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
 
     for (let index = 0; index < NgDatepickerDirective.ngDatepickerDirectives.length; index++) {
       const directive = NgDatepickerDirective.ngDatepickerDirectives[index];
-      
+
       if (target === directive.elementRef.nativeElement || isChildOf(directive.elementRef.nativeElement, target as HTMLElement)) {
         targetIsNotPartOfAnyDirectiveElementRef = false;
         break;
@@ -112,14 +117,24 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private appendToBody() {
-    document.body.appendChild(this.getDomElement(NgDatepickerDirective.ngDatepickerComponentRef));
+    this.ngDatepickerComponentRef = this.dynamicComponentsService.createComponentElement(NgDatepickerComponent, {});
+
+    this.appRef.attachView(this.ngDatepickerComponentRef.hostView);
+
+    document.body.appendChild(this.getDomElement(this.ngDatepickerComponentRef));
   }
 
   private removeFromBody() {
-    this.getDomElement(NgDatepickerDirective.ngDatepickerComponentRef).remove();
+    this.getDomElement(this.ngDatepickerComponentRef).remove();
+
+    this.appRef.detachView(this.ngDatepickerComponentRef.hostView);
   }
 
   private updateInstance() {
+    if (!this.datepickerInstance) {
+      return;
+    }
+
     this.datepickerInstance.date = this.date;
     this.datepickerInstance.dateChanged = this.dateChanged;
     this.datepickerInstance.initMonth();
