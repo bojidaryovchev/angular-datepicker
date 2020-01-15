@@ -143,6 +143,10 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private updatePosition() {
+    if (!this.datepickerElement) {
+      return;
+    }
+
     const { left, top, width, height } = this.elementRef.nativeElement.getBoundingClientRect();
 
     const datepicker = this.datepickerElement.firstElementChild as HTMLElement;
