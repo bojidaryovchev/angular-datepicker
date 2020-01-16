@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, AfterViewChecked } from '@angular/core';
 import { DatepickerView } from '../../enums/datepickerView.enum';
 import { NgDate } from '../../models/ngDate';
 
@@ -8,7 +8,7 @@ import { NgDate } from '../../models/ngDate';
   styleUrls: ['./ngdatepicker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NgDatepickerComponent {
+export class NgDatepickerComponent implements AfterViewChecked {
   private readonly yearCellsCount: number = 16;
   private readonly dayTimespan: number = 24 * 3600 * 1000;
   private readonly datesRows: number = 6;
@@ -20,6 +20,8 @@ export class NgDatepickerComponent {
   datepickerView = DatepickerView;
   currentDatepickerView: DatepickerView = DatepickerView.Days;
   date: Date;
+  minDate: Date;
+  maxDate: Date;
   dateChanged: EventEmitter<Date>;
 
   month: number;
@@ -120,6 +122,22 @@ export class NgDatepickerComponent {
     const today = new Date();
 
     return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
+  }
+
+  isBeforeMinDate(ngDate: NgDate): boolean {
+    if (!this.minDate) {
+      return;
+    }
+
+    return ngDate.date.getTime() < this.minDate.getTime();
+  }
+
+  isAfterMaxDate(ngDate: NgDate): boolean {
+    if (!this.maxDate) {
+      return;
+    }
+
+    return ngDate.date.getTime() > this.maxDate.getTime();
   }
 
   show() {
@@ -243,6 +261,18 @@ export class NgDatepickerComponent {
         this.forwards();
       }
     } else {
+      if (this.minDate) {
+        if (ngDate.date.getTime() < this.minDate.getTime()) {
+          return;
+        }
+      }
+
+      if (this.maxDate) {
+        if (ngDate.date.getTime() > this.maxDate.getTime()) {
+          return;
+        }
+      }
+      
       this.dateChanged.emit(ngDate.date);
       this.hide();
     }

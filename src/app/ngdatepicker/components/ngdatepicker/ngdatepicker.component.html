@@ -36,7 +36,7 @@
             class="ngdatepicker-cells-dates-cell"
             *ngFor="let d of dates"
             (click)="onDateChosen($event, d)"
-            [class.ngdatepicker-cells-dates-cell-disabled]="d.disabled"
+            [class.ngdatepicker-cells-dates-cell-disabled]="d.disabled || isBeforeMinDate(d) || isAfterMaxDate(d)"
             [class.ngdatepicker-cells-dates-cell-active]="isActive(d.date)"
             [class.ngdatepicker-cells-dates-cell-today]="isToday(d.date)"
           >

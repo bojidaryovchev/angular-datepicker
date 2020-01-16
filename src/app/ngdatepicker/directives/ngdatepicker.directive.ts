@@ -27,6 +27,8 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
   private readonly marginTop: number = 4;
 
   @Input() date: Date;
+  @Input() minDate: Date;
+  @Input() maxDate: Date;
 
   @Output() dateChanged: EventEmitter<Date> = new EventEmitter();
 
@@ -136,6 +138,8 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     this.datepickerInstance.date = this.date;
+    this.datepickerInstance.minDate = this.minDate;
+    this.datepickerInstance.maxDate = this.maxDate;
     this.datepickerInstance.dateChanged = this.dateChanged;
     this.datepickerInstance.initMonth();
     this.datepickerInstance.initYear();
