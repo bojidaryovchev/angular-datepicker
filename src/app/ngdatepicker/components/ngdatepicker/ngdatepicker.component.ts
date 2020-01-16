@@ -27,6 +27,10 @@ export class NgDatepickerComponent {
 
   constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
 
+  ngAfterViewChecked() {
+    this.changeDetectorRef.markForCheck();
+  }
+
   get monthString(): string {
     return this.months[this.month];
   }
