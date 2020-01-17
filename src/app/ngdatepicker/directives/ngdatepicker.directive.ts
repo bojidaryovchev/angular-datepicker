@@ -92,6 +92,9 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
 
   onClick() {
     this.updatePosition();
+
+    NgDatepickerDirective.ngDatepickerDirectives.forEach(d => d.datepickerInstance.hide());
+
     this.datepickerInstance.show();
   }
 
