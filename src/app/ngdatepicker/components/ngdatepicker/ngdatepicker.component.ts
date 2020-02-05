@@ -8,7 +8,7 @@ import { NgDate } from '../../models/ngDate';
   styleUrls: ['./ngdatepicker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NgDatepickerComponent implements AfterViewChecked {
+export class NgDatepickerComponent {
   private readonly yearCellsCount: number = 16;
   private readonly dayTimespan: number = 24 * 3600 * 1000;
   private readonly datesRows: number = 6;
@@ -28,10 +28,6 @@ export class NgDatepickerComponent implements AfterViewChecked {
   year: number;
 
   constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
-
-  ngAfterViewChecked() {
-    this.changeDetectorRef.markForCheck();
-  }
 
   get monthString(): string {
     return this.months[this.month];
@@ -158,7 +154,12 @@ export class NgDatepickerComponent implements AfterViewChecked {
     this.year = this.date.getFullYear();
   }
 
-  backwards() {
+  backwards(e: Event) {
+    if (e) {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }
+
     switch (this.currentDatepickerView) {
       case DatepickerView.Days:
         this.month--;
@@ -194,7 +195,12 @@ export class NgDatepickerComponent implements AfterViewChecked {
     this.changeDetectorRef.markForCheck();
   }
 
-  forwards() {
+  forwards(e: Event) {
+    if (e) {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }
+
     switch (this.currentDatepickerView) {
       case DatepickerView.Days:
         this.month++;
@@ -253,12 +259,12 @@ export class NgDatepickerComponent implements AfterViewChecked {
         (ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() === this.year) ||
         (ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() < this.year)
       ) {
-        this.backwards();
+        this.backwards(e);
       } else if (
         (ngDate.date.getMonth() > this.month && ngDate.date.getFullYear() === this.year) ||
         (ngDate.date.getMonth() < this.month && ngDate.date.getFullYear() > this.year)
       ) {
-        this.forwards();
+        this.forwards(e);
       }
     } else {
       if (this.minDate) {
@@ -272,7 +278,7 @@ export class NgDatepickerComponent implements AfterViewChecked {
           return;
         }
       }
-      
+
       this.dateChanged.emit(ngDate.date);
       this.hide();
     }

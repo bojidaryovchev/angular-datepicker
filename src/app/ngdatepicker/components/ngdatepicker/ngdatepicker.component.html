@@ -1,6 +1,6 @@
 <div class="ngdatepicker" [class.ngdatepicker-visible]="visible">
   <div class="ngdatepicker-header">
-    <div class="ngdatepicker-header-arrow" (click)="backwards()">
+    <div class="ngdatepicker-header-arrow" (click)="backwards($event)">
       <div class="responsive-flex-wrapper">
         <i class="material-icons">keyboard_arrow_left</i>
       </div>
@@ -19,7 +19,7 @@
         </ng-container>
       </ng-container>
     </div>
-    <div class="ngdatepicker-header-arrow" (click)="forwards()">
+    <div class="ngdatepicker-header-arrow" (click)="forwards($event)">
       <div class="responsive-flex-wrapper">
         <i class="material-icons">keyboard_arrow_right</i>
       </div>

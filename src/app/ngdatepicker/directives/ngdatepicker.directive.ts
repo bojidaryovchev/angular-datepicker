@@ -47,8 +47,6 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
 
     this.appendToBody();
     this.initGlobalScrollHandler();
-
-    this.updateInstance();
   }
 
   ngOnChanges() {
@@ -95,6 +93,7 @@ export class NgDatepickerDirective implements OnInit, OnChanges, OnDestroy {
 
     NgDatepickerDirective.ngDatepickerDirectives.forEach(d => d.datepickerInstance.hide());
 
+    this.updateInstance();
     this.datepickerInstance.show();
   }
 
