@@ -1,4 +1,4 @@
-# ngdatepicker
+# ngdatepicker (Angular Datepicker)
 
 a simple and easy to use datepicker
 
