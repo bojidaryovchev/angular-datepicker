@@ -64,10 +64,11 @@ export class NgDatepickerComponent {
 
     let prev = new Date(date);
 
-    for (let i = prev.getDay() - 1; i > 0; i--) {
-      prev = new Date(prev.getTime() - this.dayTimespan);
+    let prevDay = prev.getDay();
+    let day = !prevDay ? 6 : prevDay - 1;
 
-      this.setTime(this.date, prev);
+    for (let i = day; i > 0; i--) {
+      prev = new Date(prev.getTime() - this.dayTimespan);
 
       dates.unshift({
         date: prev,
@@ -81,8 +82,6 @@ export class NgDatepickerComponent {
       });
 
       date = new Date(date.getTime() + this.dayTimespan);
-
-      this.setTime(this.date, date);
     }
 
     while (dates.length < this.datesRows * this.days.length) {
@@ -92,8 +91,6 @@ export class NgDatepickerComponent {
       });
 
       date = new Date(date.getTime() + this.dayTimespan);
-
-      this.setTime(this.date, date);
     }
 
     return dates;
